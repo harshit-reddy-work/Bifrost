@@ -92,8 +92,9 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'login'
 
-    with app.app_context():
-        db.create_all()
+
+    # Tables already created on Neon PostgreSQL — do NOT call db.create_all() here
+    # as it conflicts with PostgreSQL's built-in 'user' type.
 
     # -------------------------
     # Helpers
