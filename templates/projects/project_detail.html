@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ p.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <h2 class="fw-bold">{{ p.title }}</h2>
+    <p class="text-muted mb-3">Uploaded by {{ p.owner.name }}</p>
+
+    <div class="card shadow-sm p-4 rounded-4">
+        <p style="white-space: pre-line;">{{ p.description }}</p>
+
+        {% if p.github %}
+        <a href="{{ p.github }}" class="btn btn-dark mt-3" target="_blank">
+            View on GitHub
+        </a>
+        {% endif %}
+    </div>
+
+    <a href="{{ url_for('projecthub') }}" class="btn btn-outline-secondary mt-4">
+        ← Back to ProjectHub
+    </a>
+
+</div>
+{% endblock %}

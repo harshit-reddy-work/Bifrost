@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-2 text-center">
+        <form method="POST" action="{{ url_for('vote_post', post_id=post.id) }}" class="mb-2">
+            <button type="submit" name="vote_type" value="upvote" class="btn btn-lg p-0 border-0 bg-transparent">
+                <i class="fas fa-arrow-up fa-2x {% if post.score > 0 %}text-success{% else %}text-muted{% endif %}"></i>
+            </button>
+        </form>
+        <h3 class="mb-0">{{ post.score }}</h3>
+        <form method="POST" action="{{ url_for('vote_post', post_id=post.id) }}" class="mt-2">
+            <button type="submit" name="vote_type" value="downvote" class="btn btn-lg p-0 border-0 bg-transparent">
+                <i class="fas fa-arrow-down fa-2x {% if post.score < 0 %}text-danger{% else %}text-muted{% endif %}"></i>
+            </button>
+        </form>
+    </div>
+    
+    <div class="col-md-10">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h2 class="mb-0">
+                        {{ post.title }}
+                        {% if post.is_pinned %}
+                            <span class="badge bg-warning">Pinned</span>
+                        {% endif %}
+                        {% if post.is_locked %}
+                            <span class="badge bg-secondary">Locked</span>
+                        {% endif %}
+                    </h2>
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                    <div>
+                        {% if post.is_locked %}
+                            <form method="POST" action="{{ url_for('admin_unlock_post', post_id=post.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-success">Unlock</button>
+                            </form>
+                        {% else %}
+                            <form method="POST" action="{{ url_for('admin_lock_post', post_id=post.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-warning">Lock</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                <p class="text-muted small mb-3">
+                    by <a href="{{ url_for('view_user', user_id=post.author.id) }}">{{ post.author.username }}</a>
+                    {% if post.category %}
+                        in <span class="badge bg-info">{{ post.category.name }}</span>
+                    {% endif %}
+                    • {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}
+                </p>
+                <div class="post-content">
+                    {{ post.content|replace('\n', '<br>')|safe }}
+                </div>
+            </div>
+        </div>
+        
+        {% if current_user.is_authenticated and not post.is_locked %}
+            {% if not current_user.is_banned and not current_user.is_silenced %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>Add Comment</h5>
+                    <form method="POST" action="{{ url_for('add_comment', post_id=post.id) }}">
+                        <div class="mb-3">
+                            <textarea name="content" class="form-control" rows="4" placeholder="Write a comment..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Comment</button>
+                    </form>
+                </div>
+            </div>
+            {% elif current_user.is_banned %}
+            <div class="alert alert-danger">You are banned from the forum.</div>
+            {% elif current_user.is_silenced %}
+            <div class="alert alert-warning">
+                You are silenced from commenting{% if current_user.silence_until %} until {{ current_user.silence_until.strftime('%Y-%m-%d %H:%M') }}{% endif %}.
+            </div>
+            {% endif %}
+        {% endif %}
+        
+        <h4 class="mb-3">Comments ({{ comments|length }})</h4>
+        
+        {% for comment in comments %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-auto text-center" style="width: 50px;">
+                        <form method="POST" action="{{ url_for('vote_comment', comment_id=comment.id) }}" class="mb-1">
+                            <button type="submit" name="vote_type" value="upvote" class="btn btn-sm p-0 border-0 bg-transparent">
+                                <i class="fas fa-arrow-up {% if comment.score > 0 %}text-success{% else %}text-muted{% endif %}"></i>
+                            </button>
+                        </form>
+                        <small class="fw-bold">{{ comment.score }}</small>
+                        <form method="POST" action="{{ url_for('vote_comment', comment_id=comment.id) }}" class="mt-1">
+                            <button type="submit" name="vote_type" value="downvote" class="btn btn-sm p-0 border-0 bg-transparent">
+                                <i class="fas fa-arrow-down {% if comment.score < 0 %}text-danger{% else %}text-muted{% endif %}"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col">
+                        <p class="mb-1">
+                            <strong><a href="{{ url_for('view_user', user_id=comment.author.id) }}">{{ comment.author.username }}</a></strong>
+                            <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </p>
+                        <p class="mb-2">{{ comment.content|replace('\n', '<br>')|safe }}</p>
+                        
+                        {% if current_user.is_authenticated and not post.is_locked and not current_user.is_banned and not current_user.is_silenced %}
+                        <form method="POST" action="{{ url_for('add_comment', post_id=post.id) }}" class="mt-2">
+                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                            <div class="input-group">
+                                <input type="text" name="content" class="form-control form-control-sm" placeholder="Reply..." required>
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Reply</button>
+                            </div>
+                        </form>
+                        {% endif %}
+                        
+                        {% if comment.replies %}
+                        <div class="mt-3 ms-4">
+                            {% for reply in comment.replies %}
+                            <div class="card mb-2">
+                                <div class="card-body py-2">
+                                    <div class="row">
+                                        <div class="col-auto text-center" style="width: 40px;">
+                                            <form method="POST" action="{{ url_for('vote_comment', comment_id=reply.id) }}" class="mb-1">
+                                                <button type="submit" name="vote_type" value="upvote" class="btn btn-sm p-0 border-0 bg-transparent">
+                                                    <i class="fas fa-arrow-up fa-xs {% if reply.score > 0 %}text-success{% else %}text-muted{% endif %}"></i>
+                                                </button>
+                                            </form>
+                                            <small class="fw-bold">{{ reply.score }}</small>
+                                            <form method="POST" action="{{ url_for('vote_comment', comment_id=reply.id) }}" class="mt-1">
+                                                <button type="submit" name="vote_type" value="downvote" class="btn btn-sm p-0 border-0 bg-transparent">
+                                                    <i class="fas fa-arrow-down fa-xs {% if reply.score < 0 %}text-danger{% else %}text-muted{% endif %}"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                        <div class="col">
+                                            <small>
+                                                <strong>{{ reply.author.username }}</strong>
+                                                <span class="text-muted">{{ reply.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                                            </small>
+                                            <p class="mb-0 small">{{ reply.content|replace('\n', '<br>')|safe }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">No comments yet. Be the first to comment!</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

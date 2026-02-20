@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Create Team{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">Create a New Team</h2>
+
+    <form method="POST">
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Team Name</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Description</label>
+            <textarea name="description" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">For Event</label>
+            <select name="event_id" class="form-select">
+                <option value="">Others (No specific event)</option>
+                {% for ev in events %}
+                <option value="{{ ev.id }}">{{ ev.title }} — {{ ev.date.strftime('%d %b %Y') }}</option>
+                {% endfor %}
+            </select>
+            <small class="text-muted">Select the event this team is for, or choose "Others" if not
+                event-specific.</small>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Team Size Limit</label>
+            <input type="number" name="size_limit" class="form-control" min="2" max="20" value="4" required>
+        </div>
+
+        <button class="btn btn-primary px-4">Create Team</button>
+
+    </form>
+</div>
+{% endblock %}

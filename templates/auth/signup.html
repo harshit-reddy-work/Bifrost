@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-start py-5">
+  <div class="card p-4" style="width:900px; background:#eafffb">
+    <h2 class="text-center mb-4">🎓 Student Signup</h2>
+
+    <form id="signupForm" method="post" action="{{ url_for('signup') }}">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Full Name</label>
+          <input name="name" class="form-control" required />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Mobile (10 digits)</label>
+          <input name="mobile" class="form-control" required pattern="^\d{10}$" />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Email</label>
+          <input name="email" type="email" class="form-control" required />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Username</label>
+          <input name="username" class="form-control" required />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Password</label>
+          <input id="password" name="password" type="password" class="form-control" required />
+          <div class="form-text">Min 8 chars including uppercase, lowercase, number & special char.</div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Roll Number (mandatory)</label>
+          <input name="roll_number" class="form-control" required />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">CodeChef ID</label>
+          <input name="codechef" class="form-control" required />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">HackerRank ID</label>
+          <input name="hackerrank" class="form-control" required />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">LeetCode ID</label>
+          <input name="leetcode" class="form-control" required />
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <button type="submit" class="btn btn-primary w-100">Create Account & Setup Profile</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+document.getElementById('signupForm').addEventListener('submit', function(e){
+  const password = document.getElementById('password').value;
+  const passRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  if (!passRe.test(password)) {
+    e.preventDefault();
+    alert('Password must have at least 8 chars and include uppercase, lowercase, number and special character.');
+    return false;
+  }
+  // HTML5 pattern and type=email handle the rest client-side.
+});
+</script>
+{% endblock %}

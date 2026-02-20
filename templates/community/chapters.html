@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Student Chapters</h2>
+
+<div class="row g-3">
+  {% if chapters %}
+    {% for chapter in chapters %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card p-3 h-100" style="border-radius:14px; box-shadow:0 10px 20px rgba(0,0,0,0.06);">
+          <h5 class="fw-bold">{{ chapter.name }}</h5>
+
+          <p class="text-muted small mb-2">
+            {{ (chapter.description or '')[:180] }}{% if chapter.description and chapter.description|length > 180 %}...{% endif %}
+          </p>
+
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <div>
+              {% if chapter.contact %}
+                <a href="{{ chapter.contact }}" target="_blank" rel="noopener noreferrer" class="social-svg" title="Instagram" aria-label="Instagram">
+                  <img src="{{ url_for('static', filename='icons/instagram.png') }}" alt="Instagram" width="22" height="22" style="border-radius:5px;">
+                </a>
+              {% endif %}
+            </div>
+            <a href="{{ url_for('chapter_detail', chapter_id=chapter.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="col-12">No chapters found.</div>
+  {% endif %}
+</div>
+{% endblock %}

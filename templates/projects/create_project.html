@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="card-title mb-3">Create Project</h4>
+
+        <form method="post" action="{{ url_for('create_project') }}">
+          <div class="mb-3">
+            <label for="title" class="form-label">Project Title</label>
+            <input id="title" name="title" required class="form-control" placeholder="e.g. Campus Map App">
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" rows="4" class="form-control" placeholder="Short summary"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="github" class="form-label">GitHub / Demo URL (optional)</label>
+            <input id="github" name="github" class="form-control" placeholder="https://github.com/your/repo">
+          </div>
+
+          <div class="mb-3">
+            <label for="owner_email" class="form-label">Your email</label>
+            <input id="owner_email" name="owner_email" type="email" required class="form-control" placeholder="you@university.edu">
+            <div class="form-text">No auth for demo — use your email so the project links to a profile.</div>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <a class="btn btn-outline-secondary" href="{{ url_for('projects') }}">Cancel</a>
+            <button type="submit" class="btn btn-primary">Create Project</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

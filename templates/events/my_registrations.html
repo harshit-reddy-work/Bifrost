@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h2>My Registrations</h2>
+  {% if registrations %}
+    <ul class="list-group">
+      {% for reg in registrations %}
+        <li class="list-group-item">
+          <strong>{{ reg.event.title }}</strong>  
+          <span class="text-muted">on {{ reg.event.date.strftime('%Y-%m-%d') if reg.event.date else 'TBA' }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You haven’t registered for any events yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

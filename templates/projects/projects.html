@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between">
+  <h2>Projects</h2>
+  <a class="btn btn-primary" href="{{ url_for('create_project') }}">Add Project</a>
+</div>
+
+{% if projects %}
+  <div class="row mt-3">
+    {% for p in projects %}
+    <div class="col-md-6 mb-3">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ p.title }}</h5>
+          <p class="card-text">{{ p.description[:200] }}{% if p.description and p.description|length > 200 %}...{% endif %}</p>
+          <p class="mb-0"><small>By {{ p.owner.name if p.owner else 'Unknown' }}</small></p>
+          {% if p.github %}<a href="{{ p.github }}" target="_blank" class="btn btn-sm btn-outline-secondary mt-2">GitHub</a>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No projects yet.</p>
+{% endif %}
+{% endblock %}

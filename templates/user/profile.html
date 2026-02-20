@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% block title %}Profile — {{ user.name }}{% endblock %}
+
+{% block content %}
+
+<style>
+
+  /* Banner */
+  .profile-banner {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #87CEEB, #B7E9FF, #DFF7FF);
+    border-radius: 20px;
+    margin-bottom: -80px;
+  }
+
+  /* Main Profile Card */
+  .profile-card {
+    max-width: 950px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 22px;
+    box-shadow: 0 4px 35px rgba(0,0,0,0.08);
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Avatar */
+  .profile-avatar-big {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: #e9f3ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 55px;
+    font-weight: 600;
+    color: #2d6cdf;
+    border: 5px solid white;
+    margin-top: -75px;
+    margin-bottom: 15px;
+  }
+
+  /* Info grid */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px 40px;
+    margin-top: 20px;
+  }
+
+  .info-label {
+    font-weight: 700;
+    color: #333;
+  }
+
+  .info-value {
+    color: #555;
+  }
+
+  /* Stats Bar */
+  .stat-box {
+    background: #f1f9ff;
+    border-radius: 15px;
+    padding: 18px;
+    text-align: center;
+    flex: 1;
+    border: 2px solid #d9ecff;
+  }
+
+  .stat-number {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2d6cdf;
+  }
+
+  /* Social icons */
+  .social-links a {
+    font-size: 22px;
+    margin-right: 15px;
+    color: #2d6cdf;
+  }
+  .social-links a:hover {
+    color: #174a9e;
+  }
+
+  /* Section title */
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 40px;
+  }
+
+  /* Achievements badges */
+  .badge-pill {
+    background: #eaf3ff;
+    padding: 10px 16px;
+    border-radius: 30px;
+    margin-right: 10px;
+    font-size: 15px;
+    display: inline-block;
+    border: 1px solid #cfe2ff;
+  }
+
+  /* Project Cards */
+  .project-card {
+    background: #f8fbff;
+    padding: 20px;
+    border-radius: 14px;
+    border-left: 5px solid #2d6cdf;
+    margin-bottom: 20px;
+  }
+
+  .project-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .project-icon {
+    font-size: 26px;
+    color: #2d6cdf;
+  }
+
+  .empty-illustration {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+</style>
+
+
+
+<!-- Banner -->
+<div class="profile-banner"></div>
+
+<!-- Main Profile Card -->
+<div class="profile-card">
+
+    <!-- Avatar Center -->
+    <div class="profile-avatar-big mx-auto">
+        {{ user.name[0] | upper }}
+    </div>
+
+    <!-- Basic Info -->
+    <div class="text-center">
+      <h2 class="fw-bold">{{ user.name }}</h2>
+      <div class="text-muted">Joined: {{ user.created_at.date() }}</div>
+    </div>
+
+    <!-- Edit Button -->
+    <div class="text-end mt-3">
+      {% if current_user.id == user.id %}
+      <a href="{{ url_for('edit_user', user_id=user.id) }}" class="btn btn-primary px-4">Edit Profile</a>
+      {% endif %}
+    </div>
+
+
+    <!-- Stats Row -->
+    <div class="d-flex gap-3 mt-4">
+      <div class="stat-box">
+        <div class="stat-number">{{ user.projects|length }}</div>
+        <div class="text-muted">Projects</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">{{ user.skills.split(',')|length if user.skills else 0 }}</div>
+        <div class="text-muted">Skills</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">—</div>
+        <div class="text-muted">Rank</div>
+      </div>
+    </div>
+
+
+    <!-- Social Links -->
+    <div class="section-title">Social Profiles</div>
+    <div class="social-links mb-2">
+      {% if user.github %}<a href="{{ user.github }}" target="_blank"><i class="fab fa-github"></i></a>{% endif %}
+      {% if user.linkedin %}<a href="{{ user.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i></a>{% endif %}
+      {% if user.leetcode %}<a href="https://leetcode.com/{{ user.leetcode }}" target="_blank"><i class="fas fa-code"></i></a>{% endif %}
+      {% if user.codechef %}<a href="https://www.codechef.com/users/{{ user.codechef }}" target="_blank"><i class="fas fa-utensils"></i></a>{% endif %}
+      {% if user.hackerrank %}<a href="https://www.hackerrank.com/{{ user.hackerrank }}" target="_blank"><i class="fab fa-hackerrank"></i></a>{% endif %}
+    </div>
+
+
+    <!-- Profile Details Section -->
+    <div class="section-title">Profile Details</div>
+
+    <div class="info-grid">
+
+      <div>
+        <div class="info-label">Email</div>
+        <div class="info-value">{{ user.email }}</div>
+      </div>
+
+      <div>
+        <div class="info-label">Skills</div>
+        <div class="info-value">{{ user.skills or 'Not added' }}</div>
+      </div>
+
+      <div>
+        <div class="info-label">College</div>
+        <div class="info-value">{{ user.college or 'Not added' }}</div>
+      </div>
+
+      <div>
+        <div class="info-label">Branch</div>
+        <div class="info-value">{{ user.branch or 'Not added' }}</div>
+      </div>
+
+      <div>
+        <div class="info-label">Year</div>
+        <div class="info-value">{{ user.year or 'Not added' }}</div>
+      </div>
+    </div>
+
+
+    <!-- Achievements Section -->
+    <div class="section-title">Achievements</div>
+    <div class="mt-2">
+      <span class="badge-pill">🏅 Hackathon Participant</span>
+      <span class="badge-pill">🚀 Active Learner</span>
+      <span class="badge-pill">💻 Tech Enthusiast</span>
+    </div>
+
+
+    <!-- Projects Section -->
+    <div class="section-title">Projects</div>
+
+    {% if user.projects|length == 0 %}
+      <div class="empty-illustration">
+        <p class="mt-3 text-muted">No projects uploaded yet.</p>
+      </div>
+    {% else %}
+      {% for p in user.projects %}
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-icon">📁</div>
+            <h5 class="fw-bold m-0">{{ p.title }}</h5>
+          </div>
+
+          <p class="mt-2">{{ p.description }}</p>
+
+          {% if p.github %}
+            <div><strong>GitHub:</strong> <a href="{{ p.github }}" target="_blank">{{ p.github }}</a></div>
+          {% endif %}
+
+          {% if p.techstack %}
+            <div><strong>Tech Stack:</strong> {{ p.techstack }}</div>
+          {% endif %}
+
+          {% if p.video %}
+            <div><strong>Demo Video:</strong> <a href="{{ p.video }}" target="_blank">Watch</a></div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+</div>
+
+{% endblock %}

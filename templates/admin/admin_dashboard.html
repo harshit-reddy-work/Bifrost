@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mb-4">
+  <h2 class="d-inline">Admin Dashboard</h2>
+  <span class="badge bg-danger ms-2">Admin Only</span>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-3 mb-3">
+    <div class="card border-primary">
+      <div class="card-body">
+        <h5 class="card-title">Users</h5>
+        <h2 class="text-primary">{{ user_count }}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card border-success">
+      <div class="card-body">
+        <h5 class="card-title">Projects</h5>
+        <h2 class="text-success">{{ project_count }}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card border-info">
+      <div class="card-body">
+        <h5 class="card-title">Events</h5>
+        <h2 class="text-info">{{ event_count }}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card border-warning">
+      <div class="card-body">
+        <h5 class="card-title">Teams</h5>
+        <h2 class="text-warning">{{ team_count }}</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-6 mb-3">
+    <div class="card border-secondary">
+      <div class="card-body">
+        <h5 class="card-title">Clubs</h5>
+        <h2 class="text-secondary">{{ club_count }}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mb-3">
+    <div class="card border-dark">
+      <div class="card-body">
+        <h5 class="card-title">Student Chapters</h5>
+        <h2 class="text-dark">{{ chapter_count }}</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h5 class="mb-0">Quick Actions</h5>
+  </div>
+  <div class="card-body">
+    <a href="{{ url_for('admin_list_users') }}" class="btn btn-primary me-2">Manage Users</a>
+    <a href="{{ url_for('export_users') }}" class="btn btn-success me-2">Export Users CSV</a>
+    <a href="{{ url_for('list_users') }}" class="btn btn-info me-2">View All Users</a>
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Back to Home</a>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h5 class="mb-0">Recent Users</h5>
+  </div>
+  <div class="card-body">
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Admin</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in recent_users %}
+        <tr>
+          <td>{{ u.id }}</td>
+          <td>{{ u.username }}</td>
+          <td>{{ u.name }}</td>
+          <td>{{ u.email }}</td>
+          <td>
+            {% if u.is_admin %}
+              <span class="badge bg-danger">Admin</span>
+            {% else %}
+              <span class="badge bg-secondary">User</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('admin_edit_user', user_id=u.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

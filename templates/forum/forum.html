@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Categories</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="{{ url_for('forum') }}" class="list-group-item list-group-item-action {% if not selected_category %}active{% endif %}">
+                    All Posts
+                </a>
+                {% for cat in categories %}
+                <a href="{{ url_for('forum', category=cat.id) }}" class="list-group-item list-group-item-action {% if selected_category == cat.id %}active{% endif %}">
+                    {{ cat.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        
+        {% if current_user.is_authenticated and not current_user.is_banned %}
+        <a href="{{ url_for('create_post') }}" class="btn btn-primary w-100 mb-3">Create Post</a>
+        {% if current_user.privilege_level == 4 %}
+        <div class="alert alert-info small mb-3">
+            <strong>Note:</strong> Students can only post in Questions, Study, or Doubts categories.
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+    
+    <div class="col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Forum</h2>
+            <form method="GET" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" placeholder="Search posts..." value="{{ search_query }}">
+                <button type="submit" class="btn btn-outline-secondary">Search</button>
+            </form>
+        </div>
+        
+        {% for post in posts %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-auto text-center" style="width: 60px;">
+                        <div class="d-flex flex-column align-items-center">
+                            <form method="POST" action="{{ url_for('vote_post', post_id=post.id) }}" class="mb-1">
+                                <button type="submit" name="vote_type" value="upvote" class="btn btn-sm p-0 border-0 bg-transparent">
+                                    <i class="fas fa-arrow-up {% if post.score > 0 %}text-success{% else %}text-muted{% endif %}"></i>
+                                </button>
+                            </form>
+                            <span class="fw-bold">{{ post.score }}</span>
+                            <form method="POST" action="{{ url_for('vote_post', post_id=post.id) }}" class="mt-1">
+                                <button type="submit" name="vote_type" value="downvote" class="btn btn-sm p-0 border-0 bg-transparent">
+                                    <i class="fas fa-arrow-down {% if post.score < 0 %}text-danger{% else %}text-muted{% endif %}"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h5 class="mb-1">
+                            <a href="{{ url_for('view_post', post_id=post.id) }}" class="text-decoration-none">
+                                {{ post.title }}
+                                {% if post.is_pinned %}
+                                    <span class="badge bg-warning">Pinned</span>
+                                {% endif %}
+                                {% if post.is_locked %}
+                                    <span class="badge bg-secondary">Locked</span>
+                                {% endif %}
+                            </a>
+                        </h5>
+                        <p class="text-muted small mb-2">{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                by <a href="{{ url_for('view_user', user_id=post.author.id) }}">{{ post.author.username }}</a>
+                                {% if post.category %}
+                                    in <span class="badge bg-info">{{ post.category.name }}</span>
+                                {% endif %}
+                                • {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}
+                            </small>
+                            <small class="text-muted">
+                                {{ post.comments|length }} comment{{ 's' if post.comments|length != 1 else '' }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">No posts found. Be the first to create one!</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

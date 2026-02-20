@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+.hackathon-card {
+  max-width: 380px;
+  margin: 0 auto 1.5rem;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hackathon-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+}
+
+.hackathon-card img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+}
+
+.hackathon-card .card-body {
+  padding: 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.hackathon-card .btn {
+  flex-shrink: 0;
+}
+
+.card-meta {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.modal-body img {
+  max-height: 420px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+@media (min-width: 992px) {
+  .hackathons-row > .col-md-6.col-lg-4 {
+    display: flex;
+  }
+  .hackathons-row > .col-md-6.col-lg-4 > .hackathon-card {
+    flex: 1 1 auto;
+  }
+}
+</style>
+
+<div class="container py-4">
+  <h2 class="mb-4">Hackathons</h2>
+
+  <div class="row g-4 hackathons-row">
+
+    <!-- ========== 1️⃣ VJ Hackathon 2025 ========== -->
+    <div class="col-md-6 col-lg-4">
+      <div class="hackathon-card">
+        <img src="{{ url_for('static', filename='images/vj-hackathon-2025.png') }}" alt="VJ Hackathon 2025 Poster">
+        <div class="card-body">
+          <h5 class="card-title">VJ Hackathon 2025</h5>
+          <p class="card-text">
+            A 24-hour national-level hackathon celebrating innovation with a ₹1 Lakh prize pool!
+          </p>
+          <div class="card-meta">
+            <div>📅 17th & 18th Oct 2025</div>
+            <div>📍 VNR VJIET Campus</div>
+            <div>👥 Team Size: 1–3</div>
+          </div>
+          <div class="mt-auto d-flex justify-content-between align-items-end gap-2">
+            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#vjHackathonModal">
+              View Details
+            </button>
+            <a href="https://vnrvjietcsi.com/vjh" target="_blank" class="btn btn-primary btn-sm">
+              Register Now
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VJ Hackathon Modal -->
+    <div class="modal fade" id="vjHackathonModal" tabindex="-1" aria-labelledby="vjHackathonLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="vjHackathonLabel">VJ Hackathon 2025</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img src="{{ url_for('static', filename='images/vj-hackathon-2025.png') }}" alt="VJ Hackathon Poster" class="img-fluid mb-3">
+
+            <p>
+              Organised by the Department of Computer Science & Engineering in association with CSI SBC VNRVJIET.
+            </p>
+
+            <ul>
+              <li><strong>Round 1:</strong> Abstract Submission – Deadline: 3rd October 2025 (Free Entry)</li>
+              <li><strong>Round 2:</strong> On-Campus 24-hour Hackathon – 17th & 18th October 2025</li>
+              <li><strong>Team Size:</strong> 1–3 Members</li>
+              <li><strong>Prize Pool:</strong> ₹1 Lakh</li>
+            </ul>
+
+            <p>💬 Contacts:</p>
+            <ul>
+              <li>Mr. T. Vishwanth – 9347730397</li>
+              <li>Ms. K. Abhigna – 9346214548</li>
+              <li>Mr. Mohammad Sadhik – 8639491994</li>
+              <li>Mr. K. Prashanth – 7702315239</li>
+              <li>Mr. K. Shivareddy – 7997625275</li>
+              <li>Ms. G. Bhavya Sree – 6302694931</li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <a href="https://vnrvjietcsi.com/vjh" target="_blank" class="btn btn-primary">Register Now</a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 2️⃣ Software Hackathon - Convergence 2k25R ========== -->
+    <div class="col-md-6 col-lg-4">
+      <div class="hackathon-card">
+        <img src="{{ url_for('static', filename='images/software-hackathon-2025.png') }}" alt="Software Hackathon Poster">
+        <div class="card-body">
+          <h5 class="card-title">Software Hackathon — Convergence 2k25R</h5>
+          <p class="card-text">
+            Think. Code. Transform — a 24-hour hackathon under Convergence 2k25R with prizes worth ₹50,000!
+          </p>
+          <div class="card-meta">
+            <div>📅 3rd & 4th Nov 2025</div>
+            <div>📍 VNR VJIET, Hyderabad</div>
+            <div>👥 Team Size: 3–4 Members</div>
+          </div>
+          <div class="mt-3 d-flex justify-content-between">
+            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#softwareHackathonModal">
+              View Details
+            </button>
+            <a href="https://linktr.ee/Convergence_2K25R_Hackathon" target="_blank" class="btn btn-primary btn-sm">
+              Register Now
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Software Hackathon Modal -->
+    <div class="modal fade" id="softwareHackathonModal" tabindex="-1" aria-labelledby="softwareHackathonLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="softwareHackathonLabel">Software Hackathon — Convergence 2k25R</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img src="{{ url_for('static', filename='images/software-hackathon-2025.png') }}" alt="Software Hackathon Poster" class="img-fluid mb-3 rounded">
+
+            <p class="lead">🚀 Think, Code, Transform — All in 24 Hours!</p>
+            <p>We are excited to announce <strong>Software Hackathon - Convergence 2k25R</strong>, a 24-hour national-level hackathon on <strong>3rd & 4th November 2025</strong>!</p>
+
+            <h6>📝 Rounds:</h6>
+            <ul>
+              <li>Round 1: PPT Submission — FREE via Unstop (No Convergence Pass required)</li>
+              <li>Round 2: Prototype Development (Offline) at VNR VJIET — Convergence Pass mandatory</li>
+            </ul>
+
+            <h6>📌 Key Details:</h6>
+            <ul>
+              <li>Team Size: 3–4 Members</li>
+              <li>Duration: 24 Hours (Offline)</li>
+              <li>Venue: VNR VJIET, Hyderabad</li>
+              <li>Prize Pool: ₹50,000 + Certificates</li>
+            </ul>
+
+            <h6>💡 Domains:</h6>
+            <ul>
+              <li>Climate, Energy & Green Technologies</li>
+              <li>FinTech & Enterprise</li>
+              <li>Healthcare Tech & Wellness</li>
+              <li>Tech for Social Good | Smart & Safe Living</li>
+            </ul>
+
+            <p>Stay updated on Instagram: <strong>@convergence2k25r_vnrvjiet</strong></p>
+
+            <h6>📞 Contacts for Queries:</h6>
+            <ul>
+              <li>K. Aakash – 9494895929</li>
+              <li>M. Vardhan – 9346706032</li>
+              <li>T. Vishwanth – 9347730397</li>
+              <li>J. Rohith – 7799882377</li>
+            </ul>
+
+            <p>💻 Get ready for a thrilling 24-hour innovation challenge — <strong>Let’s code our way to victory!</strong></p>
+          </div>
+          <div class="modal-footer">
+            <a href="https://linktr.ee/Convergence_2K25R_Hackathon" target="_blank" class="btn btn-primary">Register Now</a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

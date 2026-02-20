@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<style>
+    .inbox-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #eee;
+        text-decoration: none;
+        color: inherit;
+        transition: background 0.15s;
+    }
+
+    .inbox-item:hover {
+        background: #f8f9fa;
+    }
+
+    .inbox-item.unread {
+        background: #eef4ff;
+        font-weight: 600;
+    }
+
+    .inbox-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #4f8cff;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+
+    .inbox-details {
+        margin-left: 1rem;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .inbox-name {
+        font-size: 1.05rem;
+    }
+
+    .inbox-preview {
+        font-size: 0.9rem;
+        color: #6b7280;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 400px;
+    }
+
+    .inbox-meta {
+        text-align: right;
+        flex-shrink: 0;
+        margin-left: 1rem;
+    }
+
+    .inbox-time {
+        font-size: 0.8rem;
+        color: #999;
+    }
+
+    .inbox-badge {
+        display: inline-block;
+        background: #dc3545;
+        color: #fff;
+        border-radius: 12px;
+        padding: 2px 8px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        margin-top: 4px;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">💬 Messages</h2>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        {% if conversations %}
+        {% for convo in conversations %}
+        <a href="{{ url_for('conversation', user_id=convo.partner.id) }}"
+            class="inbox-item {% if convo.unread > 0 %}unread{% endif %}">
+            <div class="inbox-avatar">
+                {{ convo.partner.name[0]|upper if convo.partner.name else '?' }}
+            </div>
+            <div class="inbox-details">
+                <div class="inbox-name">{{ convo.partner.name or convo.partner.username }}</div>
+                <div class="inbox-preview">{{ convo.last_message }}</div>
+            </div>
+            <div class="inbox-meta">
+                <div class="inbox-time">{{ convo.last_time.strftime('%d %b, %H:%M') if convo.last_time else '' }}</div>
+                {% if convo.unread > 0 %}
+                <span class="inbox-badge">{{ convo.unread }}</span>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+        {% else %}
+        <div class="p-5 text-center text-muted">
+            <h5>No messages yet</h5>
+            <p>Visit a user's profile and click "Send Message" to start a conversation.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

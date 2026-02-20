@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Team — {{ team.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h2 class="fw-bold">{{ team.name }}</h2>
+    <p class="text-muted">{{ team.description }}</p>
+
+    <p><strong>Event:</strong>
+        {% if team.event %}{{ team.event.title }}{% else %}Others{% endif %}
+    </p>
+    <p><strong>Leader:</strong> {{ team.leader.username }}</p>
+    <p><strong>Team Size:</strong> {{ team.members|length }} / {{ team.size_limit }}</p>
+
+    {% if current_user.is_authenticated and current_user in team.members %}
+    <a href="{{ url_for('team_chat', team_id=team.id) }}" class="btn btn-cta mb-3">
+        💬 Group Chat
+    </a>
+    {% endif %}
+
+    <hr>
+
+    <h4 class="fw-bold">Members</h4>
+    <ul>
+        {% for m in team.members %}
+        <li>
+            {{ m.username }}
+            {% if m.id == team.leader_id %}
+            <span class="badge bg-primary">Leader</span>
+            {% endif %}
+            {% if current_user.is_authenticated and current_user.is_admin and m.id != team.leader_id %}
+            <form method="POST" action="{{ url_for('admin_kick_user_from_team', team_id=team.id, user_id=m.id) }}"
+                class="d-inline ms-2" onsubmit="return confirm('Kick {{ m.username }} from this team?');">
+                <button type="submit" class="btn btn-sm btn-danger">Kick</button>
+            </form>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- JOIN BUTTON FOR NON-MEMBERS -->
+    {% if current_user not in team.members %}
+    <form method="POST" action="{{ url_for('request_join', team_id=team.id) }}">
+        <button class="btn btn-outline-primary">Request to Join</button>
+    </form>
+    {% endif %}
+
+    {% if current_user.id == team.leader_id %}
+    <hr>
+
+    <!-- INVITE SECTION (LEADER ONLY) -->
+    <h4 class="fw-bold">Invite Member</h4>
+
+    <form method="POST" action="{{ url_for('invite_user', team_id=team.id) }}">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" name="username" id="username" class="form-control" placeholder="Enter username to invite"
+                required>
+        </div>
+        <button class="btn btn-primary">Send Invite</button>
+    </form>
+
+    <hr>
+
+    <!-- JOIN REQUESTS (LEADER ONLY) -->
+    <h4 class="fw-bold">Join Requests</h4>
+
+    {% set pending = team.join_requests | selectattr('status', 'equalto', 'pending') | list %}
+    {% if pending %}
+    {% for req in pending %}
+    <div class="d-flex justify-content-between align-items-center border p-2 rounded mb-2">
+        <span>{{ req.sender.username }}</span>
+
+        <div>
+            <a href="{{ url_for('accept_join', req_id=req.id) }}" class="btn btn-success btn-sm">
+                Accept
+            </a>
+            <a href="{{ url_for('reject_join', req_id=req.id) }}" class="btn btn-danger btn-sm">
+                Reject
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>No pending requests.</p>
+    {% endif %}
+    {% endif %}
+
+    {% if current_user.is_authenticated and current_user.is_admin %}
+    <hr>
+    <div class="alert alert-warning">
+        <strong>Admin Mode:</strong> You can kick members from this team using the buttons above.
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

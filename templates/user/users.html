@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">All Users</h2>
+
+<div class="mb-3">
+  <a class="btn btn-outline-primary" href="{{ url_for('export_users') }}">Export as CSV</a>
+</div>
+
+<table class="table table-hover">
+  <thead class="table-light">
+    <tr>
+      <th>#</th>
+      <th>Username</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Mobile</th>
+      <th>College / Year</th>
+      <th>Skills</th>
+      <th>Files</th>
+      <th>Profile</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.id }}</td>
+      <td>{{ u.username }}</td>
+      <td>{{ u.name }}</td>
+      <td>{{ u.email }}</td>
+      <td>{{ u.mobile or '-' }}</td>
+      <td>{{ (u.college or '-') }} / {{ (u.year or '-') }}</td>
+      <td style="max-width:240px;">{{ u.skills or '-' }}</td>
+      <td>
+        {% if u.resume_filename %}
+          <a href="{{ url_for('uploaded_file', filename=u.resume_filename) }}" target="_blank">Resume</a>
+        {% endif %}
+        {% if u.certificates_filename %}
+          <span> | </span>
+          <a href="{{ url_for('uploaded_file', filename=u.certificates_filename) }}" target="_blank">Certs</a>
+        {% endif %}
+      </td>
+      <td>
+        <a href="{{ url_for('view_user', user_id=u.id) }}" class="btn btn-sm btn-outline-secondary">View</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

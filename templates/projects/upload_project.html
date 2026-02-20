@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Upload Project{% endblock %}
+
+{% block content %}
+<h2 class="fw-bold mb-4 text-center">🚀 Upload Your Project</h2>
+
+<form method="POST">
+    <div class="mb-3">
+        <label class="form-label">Project Title</label>
+        <input name="title" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Project Idea</label>
+        <textarea name="idea" class="form-control" rows="4" required></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tech Stack Used</label>
+        <input name="tech" class="form-control" placeholder="e.g., React, Flask, MySQL">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">GitHub Link</label>
+        <input name="github" class="form-control" placeholder="https://github.com/...">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Video Demo Link</label>
+        <input name="demo" class="form-control" placeholder="YouTube / Drive link">
+    </div>
+
+    <button class="btn btn-success btn-lg">Upload Project</button>
+</form>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}CloudRoom — Home{% endblock %}
+
+{% block content %}
+<section class="hero text-center py-5">
+  <div class="container">
+    <h1 class="fw-bold display-5 mb-3 hero-title animate-fadeInUp">
+      Build your campus profile, join events, win hackathons.
+    </h1>
+    <p class="lead animate-fadeInUp delay-1">
+      CloudRoom connects students with opportunities — find teammates, submit projects, and track events across campus.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="d-flex justify-content-center gap-3 mb-5 flex-wrap animate-fadeInUp delay-2">
+      {% if not current_user.is_authenticated %}
+      <a href="{{ url_for('signup') }}" class="btn btn-cta btn-lg">🚀 Get Started</a>
+      <a href="{{ url_for('login') }}" class="btn btn-ghost btn-lg">Already have an account?</a>
+      {% else %}
+      <a href="{{ url_for('profile') }}" class="btn btn-cta btn-lg">View My Profile</a>
+      <a href="{{ url_for('forum') }}" class="btn btn-ghost btn-lg">💬 Forum</a>
+      <a href="{{ url_for('calendar') }}" class="btn btn-ghost btn-lg">📅 Calendar</a>
+      {% endif %}
+      <a href="{{ url_for('clubs') }}" class="btn btn-outline-primary btn-lg">🎯 Clubs</a>
+      <a href="{{ url_for('chapters') }}" class="btn btn-outline-secondary btn-lg">📘 Chapters</a>
+    </div>
+
+    <!-- ============================ -->
+    <!-- ROW 1 — 3 CARDS -->
+    <!-- ============================ -->
+    <div class="d-flex justify-content-center align-items-stretch gap-4 flex-wrap mb-4">
+
+      <div class="feature-card animate-fadeInUp delay-2">
+        <div class="feature-emoji">🤝</div>
+        <h5 class="feature-title">TeamUp</h5>
+        <p class="feature-desc">
+          Find teammates who match your skills and goals. Create teams, share ideas, and recruit contributors.
+        </p>
+        <a class="feature-link" href="{{ url_for('teamup') }}">Find a Team →</a>
+      </div>
+
+      <div class="feature-card animate-fadeInUp delay-3">
+        <div class="feature-emoji">📅</div>
+        <h5 class="feature-title">Events</h5>
+        <p class="feature-desc">
+          Track workshops, talks, and campus events. RSVP, add to calendar, and get reminders.
+        </p>
+        <a class="feature-link" href="{{ url_for('events') }}">View Events →</a>
+      </div>
+
+      <div class="feature-card animate-fadeInUp delay-4">
+        <div class="feature-emoji">💡</div>
+        <h5 class="feature-title">Hackathons</h5>
+        <p class="feature-desc">
+          Compete in sprints: build, pitch, and win prizes. Team matching and mentorship built-in.
+        </p>
+        <a class="feature-link" href="{{ url_for('hackathons') }}">Explore Hackathons →</a>
+      </div>
+
+    </div>
+
+    <!-- ============================ -->
+    <!-- ROW 2 — 3 CARDS -->
+    <!-- ============================ -->
+    <div class="d-flex justify-content-center align-items-stretch gap-4 flex-wrap mb-4">
+
+      <div class="feature-card animate-fadeInUp delay-3">
+        <div class="feature-emoji">📁</div>
+        <h5 class="feature-title">ProjectHub</h5>
+        <p class="feature-desc">
+          Showcase your projects — add ideas, tech stack, GitHub links, and demo videos.
+          Explore what others built and find innovation partners.
+        </p>
+        <a class="feature-link" href="{{ url_for('projecthub') }}">Explore ProjectHub →</a>
+      </div>
+
+      <div class="feature-card animate-fadeInUp delay-4">
+        <div class="feature-emoji">🏆</div>
+        <h5 class="feature-title">Leaderboard</h5>
+        <p class="feature-desc">
+          Track campus rankings on HackerRank, CodeChef, and LeetCode.
+          See where you stand and compete.
+        </p>
+        <a class="feature-link" href="{{ url_for('leaderboard') }}">View Leaderboard →</a>
+      </div>
+
+      <div class="feature-card animate-fadeInUp delay-5">
+        <div class="feature-emoji">💬</div>
+        <h5 class="feature-title">Forum & Chat</h5>
+        <p class="feature-desc">
+          Ask doubts, share resources, and discuss topics with the campus community.
+          Direct message anyone instantly.
+        </p>
+        <a class="feature-link" href="{{ url_for('forum') }}">Join the Conversation →</a>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+{% endblock %}

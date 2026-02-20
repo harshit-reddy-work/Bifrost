@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Team Invitations{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">Your Team Invitations</h2>
+
+    {% if invites|length == 0 %}
+        <p class="text-muted">No invitations.</p>
+    {% else %}
+        {% for inv in invites %}
+        <div class="card p-3 mb-3">
+            <h5>Team: {{ inv.team.name }}</h5>
+            <p class="text-muted">Invited by: {{ inv.sender.username }}</p>
+
+            <a href="{{ url_for('accept_invite', invite_id=inv.id) }}" class="btn btn-success btn-sm">Accept</a>
+            <a href="{{ url_for('reject_invite', invite_id=inv.id) }}" class="btn btn-danger btn-sm">Reject</a>
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

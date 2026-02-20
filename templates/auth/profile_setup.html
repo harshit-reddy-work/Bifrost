@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-start py-5">
+  <div class="card p-4" style="width:900px; background:#eafffb">
+    <h2 class="text-center mb-4">👤 Profile Setup</h2>
+
+    <form id="profileForm" method="post" action="{{ url_for('profile_setup') }}" enctype="multipart/form-data">
+      <!-- include user_id so server knows who -->
+      <input type="hidden" name="user_id" value="{{ user.id }}"/>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">College</label>
+          <input name="college" class="form-control" required />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Branch</label>
+          <input name="branch" class="form-control" required />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Year</label>
+          <input name="year" class="form-control" required />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Skills (comma separated)</label>
+          <input name="skills" class="form-control" required />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Resume Upload (.pdf)</label>
+          <input type="file" name="resume" accept=".pdf,.png,.jpg,.jpeg" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Certificates Upload</label>
+          <input type="file" name="certificates" accept=".pdf,.png,.jpg,.jpeg" class="form-control" />
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <button type="submit" class="btn btn-primary w-100">Finish Profile Setup</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}Search Users{% endblock %}
+
+{% block content %}
+<style>
+    .user-result {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #eee;
+        transition: background 0.15s;
+    }
+
+    .user-result:hover {
+        background: #f8f9fa;
+    }
+
+    .user-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4f8cff, #6c63ff);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+
+    .user-info {
+        margin-left: 1rem;
+        flex: 1;
+    }
+
+    .user-info .user-name {
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+    .user-info .user-meta {
+        font-size: 0.88rem;
+        color: #6b7280;
+    }
+
+    .user-skills {
+        font-size: 0.82rem;
+        color: #888;
+        margin-top: 2px;
+    }
+</style>
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-1">🔍 Search Users</h2>
+    <p class="text-muted mb-4">
+        {% if query %}
+        {{ results|length }} result{{ 's' if results|length != 1 }} for "<strong>{{ query }}</strong>"
+        {% else %}
+        Type a name, username, or skill in the search bar above.
+        {% endif %}
+    </p>
+
+    {% if results %}
+    <div class="card shadow-sm border-0">
+        {% for user in results %}
+        <div class="user-result">
+            <div class="user-avatar">
+                {{ user.name[0]|upper if user.name else '?' }}
+            </div>
+            <div class="user-info">
+                <div class="user-name">{{ user.name or user.username }}</div>
+                <div class="user-meta">@{{ user.username }}
+                    {% if user.college %} · {{ user.college }}{% endif %}
+                    {% if user.branch %} · {{ user.branch }}{% endif %}
+                </div>
+                {% if user.skills %}
+                <div class="user-skills">🛠 {{ user.skills }}</div>
+                {% endif %}
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('view_user', user_id=user.id) }}" class="btn btn-outline-primary btn-sm">View
+                    Profile</a>
+                {% if current_user.is_authenticated and current_user.id != user.id %}
+                <a href="{{ url_for('conversation', user_id=user.id) }}" class="btn btn-outline-success btn-sm">💬
+                    Message</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif query %}
+    <div class="text-center text-muted py-5">
+        <h5>No users found matching "{{ query }}"</h5>
+        <p>Try searching by name, username, or skill.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

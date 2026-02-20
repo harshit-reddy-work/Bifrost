@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2>User Management</h2>
+  <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">← Back to Dashboard</a>
+</div>
+
+<div class="mb-3">
+  <a href="{{ url_for('export_users') }}" class="btn btn-success">Export as CSV</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Mobile</th>
+        <th>Role</th>
+        <th>Privilege Level</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{{ u.username }}</td>
+        <td>{{ u.name }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.mobile or '-' }}</td>
+        <td>
+          {% if u.is_admin %}
+            <span class="badge bg-danger">Admin</span>
+          {% else %}
+            <span class="badge bg-secondary">User</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if u.privilege_level == 1 %}
+            <span class="badge bg-danger">Level 1: Admin</span>
+          {% elif u.privilege_level == 2 %}
+            <span class="badge bg-warning">Level 2: Staff</span>
+          {% elif u.privilege_level == 3 %}
+            <span class="badge bg-info">Level 3: Coordinator</span>
+          {% else %}
+            <span class="badge bg-secondary">Level 4: Student</span>
+          {% endif %}
+        </td>
+        <td>{{ u.created_at.strftime('%Y-%m-%d') if u.created_at else '-' }}</td>
+        <td>
+          <a href="{{ url_for('admin_edit_user', user_id=u.id) }}" class="btn btn-sm btn-primary">Edit</a>
+          {% if u.id != current_user.id %}
+            <form method="post" action="{{ url_for('admin_delete_user', user_id=u.id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete {{ u.username }}? This action cannot be undone.');">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          {% else %}
+            <button class="btn btn-sm btn-secondary" disabled title="Cannot delete your own account">Delete</button>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

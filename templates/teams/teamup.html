@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Teams{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Teams</h2>
+
+        <div>
+            <!-- ✅ Invitations Button -->
+            <a href="{{ url_for('team_invitations') }}" class="btn btn-warning me-2">
+                🔔 Invitations
+            </a>
+
+            <!-- ✅ Create Team Button -->
+            <a href="{{ url_for('team_create') }}" class="btn btn-primary">
+                + Create Team
+            </a>
+
+        </div>
+    </div>
+
+    <!-- No teams -->
+    {% if teams|length == 0 %}
+    <p class="text-muted">You are not in any teams yet.</p>
+    {% endif %}
+
+    <!-- Teams Grid -->
+    <div class="row g-4">
+        {% for team in teams %}
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3">
+
+                <h5 class="fw-bold">{{ team.name }}</h5>
+                <p class="text-muted">{{ team.description }}</p>
+
+                <p><strong>Event:</strong>
+                    {% if team.event %}{{ team.event.title }}{% else %}Others{% endif %}
+                </p>
+                <p><strong>Members:</strong> {{ team.members|length }}</p>
+
+                <a href="{{ url_for('view_team', team_id=team.id) }}" class="btn btn-outline-primary w-100">
+                    View Team
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

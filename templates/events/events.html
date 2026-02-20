@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Inline CSS to ensure the compact card layout (paste this file as-is) -->
+<style>
+  /* Compact event card styles (override defaults) */
+  .events-grid {
+    display: block;
+  }
+
+  .event-card {
+    max-width: 360px;
+    margin: 0 auto 1.5rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(20, 20, 35, 0.06);
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  /* Fixed image area — short & cropped like the reference */
+  .event-card .event-image {
+    width: 100%;
+    height: 210px;
+    /* adjust between 180-260 if you want shorter/taller */
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Body layout */
+  .event-card .card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    min-height: 0;
+  }
+
+  /* Title and description */
+  .event-card .card-title {
+    font-size: 1.125rem;
+    margin-bottom: .25rem;
+    line-height: 1.25;
+  }
+
+  .event-card .card-text {
+    color: #444;
+    font-size: 0.96rem;
+    margin-bottom: 0.4rem;
+
+    /* Clamp to 3 lines to keep cards consistent */
+    display: -webkit-box;
+    display: box;
+    /* standard syntax */
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    /* standard syntax */
+    -webkit-box-orient: vertical;
+    box-orient: vertical;
+    /* standard syntax */
+    overflow: hidden;
+  }
+
+
+  /* Meta + register button pinned to bottom */
+  .event-card .card-meta {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: .6rem;
+  }
+
+  .event-card .card-meta .meta-left {
+    font-size: 0.88rem;
+    color: #6b7280;
+  }
+
+  /* Responsive: ensure grid columns stretch evenly */
+  @media (min-width: 992px) {
+    .events-row>.col-md-6.col-lg-4 {
+      display: flex;
+    }
+
+    .events-row>.col-md-6.col-lg-4>.event-card {
+      flex: 1 1 auto;
+    }
+  }
+
+  /* Small tweak for modal image */
+  .modal-body img {
+    max-height: 420px;
+    object-fit: contain;
+  }
+</style>
+
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Events & Hackathons</h2>
+    {% if current_user.is_authenticated and current_user.privilege_level <= 3 %} <a href="{{ url_for('create_event') }}"
+      class="btn btn-primary">Create Event</a>
+      {% endif %}
+  </div>
+
+  <!-- ====== WOW + Game Expo (static) cards in one row ====== -->
+  <div class="row mb-4">
+    <!-- WOW Card -->
+    <div class="col-md-6 col-lg-4">
+      <div class="event-card">
+        <img src="{{ url_for('static', filename='images/wow-poster.png') }}" alt="WOW - Wealth Out of Waste"
+          class="event-image">
+        <div class="card-body">
+          <h5 class="card-title">WOW – Wealth Out of Waste</h5>
+          <p class="card-text">
+            “Lost Things Find New Light” – Turn waste into wonder! Showcase your creativity by transforming discarded
+            materials into something useful and innovative.
+          </p>
+          <div class="card-meta d-flex justify-content-between align-items-center flex-wrap" style="gap: 0.6rem;">
+            <div class="meta-left d-flex flex-column justify-content-center small text-muted" style="line-height: 1.3;">
+              <div>📅 <strong>3rd Nov 2025</strong></div>
+              <div>📍 Convergence Stall (SF Room)</div>
+            </div>
+            <div class="d-flex align-items-center" style="gap: 0.5rem;">
+              <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                data-bs-target="#modal-wow">
+                View Details
+              </button>
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSf7BNeSiMfOtgV-EvqKXu7IGDP7lkAWtVYyXJr5HJmYYSUytA/viewform"
+                target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                Register
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Game Expo static card + modal (replace existing Game Expo block) ===== -->
+    <div class="col-md-6 col-lg-4">
+      <div class="event-card">
+        <img src="{{ url_for('static', filename='images/gameexpo-poster.png') }}" alt="Game Expo Poster"
+          class="event-image">
+        <div class="card-body">
+          <h5 class="card-title">Game Expo</h5>
+          <p class="card-text">
+            Showcase your own game or interactive prototype at Convergence 2k25’s Game Expo.
+            Display and demonstrate your game across two days. Team size: 1–3. Bring any required hardware.
+          </p>
+          <div class="card-meta d-flex justify-content-between align-items-center flex-wrap" style="gap: 0.6rem;">
+            <div class="meta-left d-flex flex-column justify-content-center small text-muted" style="line-height: 1.3;">
+              <div>📅 <strong>3rd &amp; 4th Nov 2025</strong></div>
+              <div>📍 VNR VJIET Campus</div>
+            </div>
+            <div class="d-flex align-items-center" style="gap: 0.5rem;">
+              <!-- View Details: opens modal -->
+              <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                data-bs-target="#modal-gameexpo">
+                View Details
+              </button>
+
+              <!-- Register (external) -->
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSesOEEywoa4uDh9dw4WjioOzGbHFenDRQtZyD_Ylws3J22rJA/viewform"
+                target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                Register
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Game Expo (id must match data-bs-target above) -->
+    <div class="modal fade" id="modal-gameexpo" tabindex="-1" aria-labelledby="modalGameexpoLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalGameexpoLabel">Game Expo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img src="{{ url_for('static', filename='images/gameexpo-poster.png') }}" alt="Game Expo Poster"
+              class="img-fluid mb-3" />
+            <p>
+              Showcase your own game or interactive prototype at Convergence 2k25’s Game Expo.
+              Display and demonstrate your game across two days. Team size: 1–3. Bring any required hardware.
+            </p>
+            <ul class="small text-muted">
+              <li>📅 3rd &amp; 4th Nov 2025</li>
+              <li>📍 VNR VJIET Campus</li>
+              <li>👥 Team size: 1–3</li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSesOEEywoa4uDh9dw4WjioOzGbHFenDRQtZyD_Ylws3J22rJA/viewform"
+              target="_blank" rel="noopener noreferrer" class="btn btn-primary">Register</a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for WOW -->
+    <div class="modal fade" id="modal-wow" tabindex="-1" aria-labelledby="modalWowLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalWowLabel">WOW – Wealth Out of Waste</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img src="{{ url_for('static', filename='images/wow-poster.png') }}" alt="WOW Poster"
+              class="img-fluid mb-3" />
+            <p>
+              “Lost Things Find New Light” – Turn waste into wonder! Showcase your creativity by transforming discarded
+              materials into something useful and innovative.
+            </p>
+
+            <ul class="small text-muted">
+              <li>📅 Submit on or before: <strong>3rd Nov 2025</strong></li>
+              <li>📍 Venue: Convergence Stall (SF Room)</li>
+              <li>💰 Prize Pool: ₹2500</li>
+              <li>📞 Contacts: Chaitanya – 9515799270, Madhuvani – 8019499184</li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSf7BNeSiMfOtgV-EvqKXu7IGDP7lkAWtVYyXJr5HJmYYSUytA/viewform"
+              target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+              Register
+            </a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== Dynamic events (existing events list) ====== -->
+    {% if events %}
+    <div class="row g-4 events-row">
+      {% for ev in events %}
+      <div class="col-md-6 col-lg-4">
+        <div class="event-card">
+          {% if ev.poster %}
+          <img src="{{ url_for('static', filename='images/' ~ ev.poster) }}" alt="{{ ev.title }}" class="event-image">
+          {% endif %}
+
+          <div class="card-body">
+            <h5 class="card-title">{{ ev.title }}</h5>
+
+            <p class="card-text">{{ ev.description }}</p>
+
+            <div class="card-meta">
+              <div class="meta-left">
+                {% if ev.date %}<div>📅 {{ ev.date.strftime('%Y-%m-%d %H:%M') }}</div>{% endif %}
+                <div>📍 {{ ev.location or 'TBD' }}</div>
+              </div>
+
+              <div>
+                <!-- View Details modal trigger -->
+                <button type="button" class="btn btn-outline-primary btn-sm me-2" data-bs-toggle="modal"
+                  data-bs-target="#modal-{{ loop.index }}">
+                  View Details
+                </button>
+
+                <!-- Register button -->
+                <form method="post" action="{{ url_for('register_event', event_id=ev.id) }}" style="display:inline;">
+                  <button type="submit" class="btn btn-primary btn-sm">Register</button>
+                </form>
+
+                {% if current_user.is_authenticated and current_user.privilege_level <= 3 %} {% if
+                  current_user.privilege_level <=2 or ev.created_by==current_user.id %} <!-- Edit button -->
+                  <a href="{{ url_for('edit_event', event_id=ev.id) }}" class="btn btn-outline-warning btn-sm ms-1"
+                    title="Edit Event">
+                    ✏️ Edit
+                  </a>
+                  <!-- Delete button -->
+                  <form method="post" action="{{ url_for('delete_event', event_id=ev.id) }}" style="display:inline;"
+                    onsubmit="return confirm('Are you sure you want to delete this event?');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm ms-1" title="Delete Event">
+                      🗑️ Delete
+                    </button>
+                  </form>
+                  {% endif %}
+                  {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal for this dynamic event -->
+      <div class="modal fade" id="modal-{{ loop.index }}" tabindex="-1" aria-labelledby="modalLabel{{ loop.index }}"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalLabel{{ loop.index }}">{{ ev.title }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              {% if ev.poster %}
+              <img src="{{ url_for('static', filename='images/' ~ ev.poster) }}" alt="{{ ev.title }} Poster"
+                class="img-fluid mb-3" />
+              {% endif %}
+              <p>{{ ev.description }}</p>
+              {% if ev.date %}
+              <p class="small text-muted">📅 {{ ev.date.strftime('%Y-%m-%d %H:%M') }}</p>
+              {% endif %}
+              <p class="small text-muted">📍 {{ ev.location or 'TBD' }}</p>
+            </div>
+            <div class="modal-footer">
+              {% if ev.register_url %}
+              <a href="{{ ev.register_url }}" target="_blank" rel="noopener noreferrer"
+                class="btn btn-primary">Register</a>
+              {% elif ev.poster %}
+              <a href="{{ url_for('static', filename='images/' ~ ev.poster) }}" target="_blank"
+                rel="noopener noreferrer" class="btn btn-primary">Register</a>
+              {% else %}
+              <button class="btn btn-secondary" disabled>Register</button>
+              {% endif %}
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>No upcoming events.</p>
+    {% endif %}
+  </div>
+  {% endblock %}

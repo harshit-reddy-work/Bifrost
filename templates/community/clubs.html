@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Clubs</h2>
+
+<div class="row g-3">
+  {% for club in clubs %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card p-3 h-100" style="border-radius:14px; box-shadow:0 10px 20px rgba(0,0,0,0.06);">
+        <h5 class="fw-bold">{{ club.name }}</h5>
+
+        <p class="text-muted small mb-2">
+          {{ (club.description or '')[:180] }}{% if club.description and club.description|length > 180 %}...{% endif %}
+        </p>
+
+        <div class="mt-auto d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-3 mt-2">
+  {# parse club.contact as before, but create direct links with inline SVGs #}
+  {% if club.contact %}
+    {% set parts = club.contact.split(' | ') %}
+    {% for p in parts %}
+      {% set low = p|lower %}
+      {% if 'instagram' in low %}
+        {% set url = p.split(':',1)[1].strip() %}
+        <a href="{{ url }}" target="_blank" class="social-svg" title="Instagram" aria-label="Instagram">
+        <img src="{{ url_for('static', filename='icons/instagram.png') }}" 
+        alt="Instagram" width="22" height="22" style="border-radius:5px;">
+        </a>
+      {% elif 'youtube' in low %}
+        {% set url = p.split(':',1)[1].strip() %}
+        <a href="{{ url }}" target="_blank" class="social-svg" title="YouTube" aria-label="YouTube">
+          <!-- YouTube SVG -->
+          <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img">
+            <path d="M23 7s-.2-1.6-.8-2.3c-.7-.9-1.5-.9-1.9-1C17.6 3 12 3 12 3s-5.6 0-8.3.7c-.4.1-1.2.1-1.9 1C1.2 5.4 1 7 1 7S0.8 8.9.8 10.8v2.4C.8 15.1 1 17 1 17s.2 1.6.8 2.3c.7.9 1.6.9 2 1 2.7.7 8.2.7 8.2.7s5.6 0 8.3-.7c.4-.1 1.2-.1 1.9-1 .6-.7.8-2.3.8-2.3s.2-3.2.2-4.9v-2.4C23.2 8.9 23 7 23 7z" fill="#FF0000"/>
+            <path d="M9.5 15.5V8.5l6 3.5-6 3.5z" fill="#fff"/>
+          </svg>
+        </a>
+      {% else %}
+        <span class="small text-muted">{{ p }}</span>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+</div>
+
+          <a href="{{ url_for('club_detail', club_id=club.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="col-12">No clubs found.</div>
+  {% endfor %}
+</div>
+{% endblock %}

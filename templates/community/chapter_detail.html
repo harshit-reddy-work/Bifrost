@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card p-4 mx-auto" style="max-width:900px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.08);">
+  <h3 class="fw-bold mb-3">{{ chapter.name }}</h3>
+
+  <p><strong>Associated Club:</strong> {{ chapter.associated_club or '-' }}</p>
+
+  <p class="text-muted">{{ chapter.description }}</p>
+
+  {% if chapter.contact %}
+  <p>
+    <strong>Contact:</strong>
+    <a href="{{ chapter.contact }}" target="_blank" rel="noopener noreferrer" style="color:#007bff; text-decoration:none;">
+      {% if chapter.contact %}
+        {# optionally show instagram icon if file exists #}
+        <img src="{{ url_for('static', filename='icons/instagram.png') }}"
+             alt="Instagram" width="20" height="20" style="vertical-align:middle; margin-right:8px; border-radius:4px;">
+      {% endif %}
+      {{ chapter.contact }}
+    </a>
+  </p>
+  {% endif %}
+
+  <div class="mt-4 text-center">
+    <a href="{{ url_for('chapters') }}" class="btn btn-dark w-100">← Back to chapters</a>
+  </div>
+</div>
+{% endblock %}

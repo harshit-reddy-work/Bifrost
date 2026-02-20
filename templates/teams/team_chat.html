@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block title %}{{ team.name }} — Group Chat{% endblock %}
+
+{% block content %}
+<style>
+    .chat-container {
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 220px);
+        min-height: 400px;
+    }
+
+    .chat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.25rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius, 16px) var(--radius, 16px) 0 0;
+    }
+
+    .chat-header h4 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .chat-header .members-count {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1.5rem;
+        background: var(--bg-body);
+        border-left: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .msg-bubble {
+        max-width: 75%;
+        padding: 0.65rem 1rem;
+        border-radius: 16px;
+        line-height: 1.45;
+        word-break: break-word;
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    .msg-sent {
+        align-self: flex-end;
+        background: var(--accent-gradient, linear-gradient(135deg, #7c6cff, #4fc3f7));
+        color: #fff;
+        border-bottom-right-radius: 4px;
+    }
+
+    .msg-received {
+        align-self: flex-start;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+        border-bottom-left-radius: 4px;
+    }
+
+    .msg-sender {
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 2px;
+        color: var(--accent, #7c6cff);
+    }
+
+    .msg-sent .msg-sender {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .msg-time {
+        font-size: 0.7rem;
+        margin-top: 4px;
+        opacity: 0.6;
+    }
+
+    .msg-sent .msg-time {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .msg-received .msg-time {
+        color: var(--text-muted);
+    }
+
+    .chat-input {
+        display: flex;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-top: none;
+        border-radius: 0 0 var(--radius, 16px) var(--radius, 16px);
+    }
+
+    .chat-input input {
+        flex: 1;
+    }
+
+    .empty-chat {
+        text-align: center;
+        color: var(--text-muted);
+        padding: 3rem 1rem;
+    }
+
+    .empty-chat i {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+</style>
+
+<div class="chat-container">
+    <!-- Header -->
+    <div class="chat-header">
+        <div>
+            <h4>💬 {{ team.name }}</h4>
+            <span class="members-count">{{ team.members|length }} members</span>
+        </div>
+        <a href="{{ url_for('view_team', team_id=team.id) }}" class="btn btn-outline-secondary btn-sm">
+            ← Back to Team
+        </a>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chatMessages">
+        {% if messages %}
+        {% for msg in messages %}
+        <div class="msg-bubble {{ 'msg-sent' if msg.sender_id == current_user.id else 'msg-received' }}">
+            {% if msg.sender_id != current_user.id %}
+            <div class="msg-sender">{{ msg.sender.name or msg.sender.username }}</div>
+            {% endif %}
+            <div>{{ msg.content }}</div>
+            <div class="msg-time">{{ msg.created_at.strftime('%b %d, %I:%M %p') }}</div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-chat">
+            <i class="fas fa-comments"></i>
+            <p>No messages yet. Start the conversation!</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Input -->
+    <form method="POST" class="chat-input">
+        <input type="text" name="content" class="form-control" placeholder="Type a message..." autocomplete="off"
+            required autofocus>
+        <button type="submit" class="btn btn-cta">Send</button>
+    </form>
+</div>
+
+<script>
+    // Auto-scroll to bottom
+    var chatBox = document.getElementById('chatMessages');
+    if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+{% endblock %}

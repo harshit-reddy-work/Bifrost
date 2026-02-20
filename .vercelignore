@@ -1,0 +1,12 @@
+venv
+__pycache__
+*.pyc
+*.db
+instances
+.vscode
+scripts
+data
+*.md
+*.csv
+*.bat
+*.ps1
