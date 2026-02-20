@@ -84,7 +84,10 @@ def create_app():
         app.config["ALLOWED_EXTENSIONS"] = {"pdf", "png", "jpg", "jpeg"}
     if not app.config.get("UPLOAD_FOLDER"):
         app.config["UPLOAD_FOLDER"] = os.path.join(app.instance_path, "uploads")
-    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+    try:
+        os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+    except OSError:
+        pass  # Vercel has read-only filesystem — skip directory creation
 
     db.init_app(app)
 
